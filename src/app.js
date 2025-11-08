@@ -15,6 +15,7 @@ import profileRoutes from './routes/profile.routes.js';
 import notificationsRoutes from './routes/notifications.routes.js';
 import uiRoutes from './routes/ui.routes.js';
 import searchRoutes from './routes/search.routes.js';
+import teamRoutes from './routes/team.routes.js';
 import { notFound, errorHandler } from './middleware/error.js';
 
 dotenv.config();
@@ -54,6 +55,7 @@ app.use('/profile', profileRoutes);
 app.use('/notifications', notificationsRoutes);
 app.use('/ui', uiRoutes);
 app.use('/search', searchRoutes);
+app.use('/team', teamRoutes);
 
 // Fallback root to index.html (frontend entry)
 app.get('/', (req, res) => {

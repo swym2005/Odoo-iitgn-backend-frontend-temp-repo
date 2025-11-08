@@ -79,6 +79,7 @@ a{color:var(--accent-alt);text-decoration:none;}
 .flowiq-loader{display:flex;align-items:center;justify-content:center;padding:1rem}
 .flowiq-loader .spinner{width:22px;height:22px;border:3px solid #2a3b55;border-top-color:#4f9fff;border-radius:50%;animation:spin 1s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
+.gated-hidden{display:none!important}
 /* Responsive enhancements */
 @media (max-width:1100px){.layout{grid-template-columns:200px 1fr;}}
 @media (max-width:900px){

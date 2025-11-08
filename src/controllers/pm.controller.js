@@ -100,6 +100,16 @@ export const projectPatch = async (req, res, next) => {
   } catch (e) { next(e); }
 };
 
+export const projectDelete = async (req, res, next) => {
+  try {
+    const Project = (await import('../models/Project.js')).Project;
+    const existing = await Project.findById(req.params.projectId);
+    if(!existing){ const err=new Error('Project not found'); err.status=404; throw err; }
+    await existing.deleteOne();
+    res.json({ success:true, deleted:true });
+  } catch(e){ next(e); }
+};
+
 export const tasksGet = async (req, res, next) => {
   try { res.json({ success: true, tasks: await listTasks(req.params.projectId, req.query) }); } catch (e) { next(e); }
 };

@@ -3,8 +3,8 @@
 	<aside class="sidebar">
 		<div class="brand"><span class="logo-dot"></span><span>FlowIQ Team</span></div>
 		<nav class="nav">
-			<a class="nav-item active" href="#"><span>My Tasks</span></a>
-			<a class="nav-item" href="/timesheets-ui/"><span>Timesheets</span></a>
+			<a class="nav-item active" href="#" data-roles="Team Member,Admin"><span>My Tasks</span></a>
+			<a class="nav-item" href="/timesheets-ui/" data-roles="Team Member,Admin,Project Manager"><span>Timesheets</span></a>
 		</nav>
 		<div class="footer">Logged in as Team Member</div>
 	</aside>
@@ -39,6 +39,8 @@
 	<div class="modal" style="width:min(700px,92vw)">
 		<h3>New Task</h3>
 		<div class="form-grid">
+			<label>Project</label>
+			<select id="tProjectSelect"></select>
 			<label>Title</label><input id="tTitle" />
 			<label>Description</label><textarea id="tDesc"></textarea>
 			<div class="flex"><div style="flex:1"><label>Due Date</label><input id="tDue" type="date" /></div><div style="flex:1"><label>Priority</label><select id="tPriority"><option>low</option><option>medium</option><option>high</option><option>critical</option></select></div></div>
@@ -48,5 +50,5 @@
 </div>
 <script src="/assets/js/common.js"></script>
 <script src="/assets/js/auth-guard.js?v=1"></script>
-<script src="/team-dashboard/team.js?v=1"></script>
+<script src="/team-dashboard/team.js?v=2"></script>
 </body></html>

@@ -10,7 +10,9 @@ const isAdmin = (user) => user?.role === 'Admin';
 
 const pmScopeQuery = (user) => {
   if (isAdmin(user)) return {};
-  return { manager: new mongoose.Types.ObjectId(user.id) };
+  const uid = new mongoose.Types.ObjectId(user.id);
+  // Allow PMs to see projects they manage OR are part of as a team member (backfill older data)
+  return { $or: [ { manager: uid }, { teamMembers: uid } ] };
 };
 
 export const getDashboard = async (user) => {
@@ -61,7 +63,13 @@ export const listProjects = async (user, { status, from, to } = {}) => {
     if (from) query.deadline.$gte = new Date(from);
     if (to) query.deadline.$lte = new Date(to);
   }
-  return Project.find(query).lean();
+  const projects = await Project.find(query).lean();
+  // Fallback: if none found and user is PM, attempt legacy manager-only filter (in case $or index mismatch temporarily)
+  if (!projects.length && !isAdmin(user)) {
+    const legacy = await Project.find({ manager: new mongoose.Types.ObjectId(user.id) }).lean();
+    return legacy;
+  }
+  return projects;
 };
 
 export const createProject = async (payload) => {

@@ -34,4 +34,34 @@
     },
     hideLoader(target){ const el = typeof target==='string'? document.querySelector(target) : target; if(!el) return; const ld=el.querySelector('.flowiq-loader'); if(ld) ld.remove(); }
   };
+
+  // Role-based feature gating helper
+  window.FlowIQ.gate = function mapGating(){
+    const u = user();
+    if(!u) return;
+    const role = u.role;
+    // Elements annotated with data-roles (comma separated) will be kept only if role is included
+    document.querySelectorAll('[data-roles]')?.forEach(el=>{
+      const allowed = el.getAttribute('data-roles').split(',').map(s=>s.trim());
+      if(!allowed.includes(role)){
+        // If destructive (buttons/actions), disable + hide visually but keep layout minimal
+        if(el.tagName==='BUTTON' || el.tagName==='A' || el.hasAttribute('data-action')){
+          el.setAttribute('disabled','disabled');
+          el.classList.add('gated-hidden');
+        } else {
+          el.classList.add('gated-hidden');
+        }
+      }
+    });
+    // Elements with data-hide-for containing roles to hide
+    document.querySelectorAll('[data-hide-for]')?.forEach(el=>{
+      const deny = el.getAttribute('data-hide-for').split(',').map(s=>s.trim());
+      if(deny.includes(role)){
+        el.classList.add('gated-hidden');
+      }
+    });
+  };
+  document.addEventListener('DOMContentLoaded',()=>{
+    try{ window.FlowIQ.gate(); }catch(e){}
+  });
 })();

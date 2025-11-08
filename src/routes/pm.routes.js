@@ -6,6 +6,7 @@ import {
   projectsPost,
   projectDetailGet,
   projectPatch,
+  projectDelete,
   tasksGet,
   tasksPost,
   taskPatch,
@@ -38,6 +39,7 @@ router.get('/projects', projectsGet);
 router.post('/projects', projectsPost);
 router.get('/projects/:projectId', projectDetailGet);
 router.patch('/projects/:projectId', projectPatch);
+router.delete('/projects/:projectId', projectDelete);
 
 router.get('/projects/:projectId/tasks', tasksGet);
 router.post('/projects/:projectId/tasks', tasksPost);

@@ -3,11 +3,11 @@
 	<aside class="sidebar">
 		<div class="brand"><span class="logo-dot"></span><span>FlowIQ Finance</span></div>
 		<nav class="nav">
-			<a class="nav-item active" href="#"><span>Dashboard</span></a>
-			<a class="nav-item" href="#" id="navInvoices"><span>Invoices</span></a>
-			<a class="nav-item" href="#" id="navBills"><span>Vendor Bills</span></a>
-			<a class="nav-item" href="#" id="navSales"><span>Sales Orders</span></a>
-			<a class="nav-item" href="#" id="navPurchase"><span>Purchase Orders</span></a>
+			<a class="nav-item active" href="#" data-roles="Finance,Admin"><span>Dashboard</span></a>
+			<a class="nav-item" href="#" id="navInvoices" data-roles="Finance,Admin"><span>Invoices</span></a>
+			<a class="nav-item" href="#" id="navBills" data-roles="Finance,Admin"><span>Vendor Bills</span></a>
+			<a class="nav-item" href="#" id="navSales" data-roles="Finance,Admin"><span>Sales Orders</span></a>
+			<a class="nav-item" href="#" id="navPurchase" data-roles="Finance,Admin"><span>Purchase Orders</span></a>
 		</nav>
 		<div class="footer">Logged in as Finance</div>
 	</aside>
@@ -16,7 +16,7 @@
 			<div class="search"><input placeholder="Search documents..." id="finSearch"/></div>
 			<div class="space-between" style="gap:.6rem">
 				<a href="/" class="button-outline">Logout</a>
-				<button class="button-primary" id="btnNewDoc">+ New</button>
+				<button class="button-primary" id="btnNewDoc" data-roles="Finance,Admin">+ New</button>
 			</div>
 		</div>
 		<div class="content" id="financeContent">
