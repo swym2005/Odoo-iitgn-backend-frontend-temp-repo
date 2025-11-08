@@ -115,6 +115,10 @@ export const updateTask = async (taskId, updates) => {
     e.status = 404;
     throw e;
   }
+  if (updates.status) {
+    t.activity.push({ type: 'status_change', meta: { status: updates.status } });
+    await t.save();
+  }
   return t;
 };
 
@@ -198,4 +202,52 @@ export const getPMAnalytics = async (user) => {
   const utilization = utilAgg.map(u => ({ userId: u._id, hours: u.hours, capacity: 160, utilization: Math.min(1, u.hours / 160) }));
 
   return { projectProgress, costVsRevenue, utilization };
+};
+
+export const getKanban = async (projectId, { q, assignee, priority } = {}) => {
+  const base = { project: projectId };
+  if (assignee) base.assignee = assignee;
+  if (priority) base.priority = priority;
+  if (q) base.title = { $regex: q, $options: 'i' };
+  const tasks = await Task.find(base).populate('assignee', 'name email').sort({ status: 1, order: 1, createdAt: 1 }).lean();
+  const columns = { todo: [], 'in-progress': [], blocked: [], review: [], done: [] };
+  for (const t of tasks) columns[t.status]?.push(t);
+  return columns;
+};
+
+export const reorderTask = async ({ taskId, from, to, userId }) => {
+  const task = await Task.findById(taskId);
+  if (!task) { const e = new Error('Task not found'); e.status = 404; throw e; }
+  const fromStatus = from.status;
+  const toStatus = to.status;
+
+  // Adjust orders in source column
+  await Task.updateMany({ project: task.project, status: fromStatus, order: { $gt: from.index } }, { $inc: { order: -1 } });
+
+  // Make room in destination column
+  await Task.updateMany({ project: task.project, status: toStatus, order: { $gte: to.index } }, { $inc: { order: 1 } });
+
+  task.status = toStatus;
+  task.order = to.index;
+  task.activity.push({ user: userId, type: 'update', meta: { action: 'reorder', from, to } });
+  await task.save();
+  return task;
+};
+
+export const addComment = async (taskId, { text }, userId) => {
+  const t = await Task.findById(taskId);
+  if (!t) { const e = new Error('Task not found'); e.status = 404; throw e; }
+  t.comments.push({ user: userId, text, createdAt: new Date() });
+  t.activity.push({ user: userId, type: 'comment', meta: { text } });
+  await t.save();
+  return t;
+};
+
+export const addAttachment = async (taskId, file, userId) => {
+  const t = await Task.findById(taskId);
+  if (!t) { const e = new Error('Task not found'); e.status = 404; throw e; }
+  t.attachments.push({ ...file, addedBy: userId, addedAt: new Date() });
+  t.activity.push({ user: userId, type: 'attachment', meta: { name: file.name, url: file.url } });
+  await t.save();
+  return t;
 };

@@ -7,6 +7,9 @@ import {
   expenseCreateSchema,
   expenseStatusSchema,
   linkDocSchema,
+  reorderTasksSchema,
+  addCommentSchema,
+  addAttachmentSchema,
 } from '../validators/pm.validators.js';
 
 import {
@@ -28,6 +31,10 @@ import {
   listBilling,
   addBillingRecord,
   getPMAnalytics,
+  getKanban,
+  reorderTask,
+  addComment,
+  addAttachment,
 } from '../services/pm.service.js';
 
 const validate = (schema, payload) => {
@@ -57,6 +64,22 @@ export const projectsPost = async (req, res, next) => {
 
 export const projectDetailGet = async (req, res, next) => {
   try { res.json({ success: true, ...(await getProjectDetail(req.user, req.params.projectId)) }); } catch (e) { next(e); }
+};
+
+export const kanbanGet = async (req, res, next) => {
+  try { res.json({ success: true, columns: await getKanban(req.params.projectId, req.query) }); } catch (e) { next(e); }
+};
+
+export const kanbanReorder = async (req, res, next) => {
+  try { const data = validate(reorderTasksSchema, req.body); res.json({ success: true, task: await reorderTask({ ...data, userId: req.user.id }) }); } catch (e) { next(e); }
+};
+
+export const taskCommentPost = async (req, res, next) => {
+  try { const data = validate(addCommentSchema, req.body); res.status(201).json({ success: true, task: await addComment(req.params.taskId, data, req.user.id) }); } catch (e) { next(e); }
+};
+
+export const taskAttachmentPost = async (req, res, next) => {
+  try { const data = validate(addAttachmentSchema, req.body); res.status(201).json({ success: true, task: await addAttachment(req.params.taskId, data, req.user.id) }); } catch (e) { next(e); }
 };
 
 export const projectPatch = async (req, res, next) => {

@@ -9,6 +9,10 @@ import {
   tasksGet,
   tasksPost,
   taskPatch,
+  kanbanGet,
+  kanbanReorder,
+  taskCommentPost,
+  taskAttachmentPost,
   timesheetsGet,
   timesheetsPost,
   timesheetsChart,
@@ -38,6 +42,10 @@ router.patch('/projects/:projectId', projectPatch);
 router.get('/projects/:projectId/tasks', tasksGet);
 router.post('/projects/:projectId/tasks', tasksPost);
 router.patch('/projects/:projectId/tasks/:taskId', taskPatch);
+router.get('/projects/:projectId/kanban', kanbanGet);
+router.post('/projects/:projectId/kanban/reorder', kanbanReorder);
+router.post('/projects/:projectId/tasks/:taskId/comments', taskCommentPost);
+router.post('/projects/:projectId/tasks/:taskId/attachments', taskAttachmentPost);
 
 router.get('/projects/:projectId/timesheets', timesheetsGet);
 router.post('/projects/:projectId/timesheets', timesheetsPost);

@@ -38,10 +38,28 @@ export const updateTaskSchema = Joi.object({
   description: Joi.string().allow('', null),
   assignee: Joi.string().hex().length(24).allow(null, ''),
   priority: Joi.string().valid('low','medium','high','critical'),
-  status: Joi.string().valid('todo','in-progress','review','done','blocked'),
+  status: Joi.string().valid('todo','in-progress','blocked','done','review'),
   dueDate: Joi.date(),
   completedAt: Joi.date(),
+  order: Joi.number().min(0),
 }).min(1);
+
+export const reorderTasksSchema = Joi.object({
+  from: Joi.object({ status: Joi.string().valid('todo','in-progress','blocked','done','review').required(), index: Joi.number().min(0).required() }).required(),
+  to: Joi.object({ status: Joi.string().valid('todo','in-progress','blocked','done','review').required(), index: Joi.number().min(0).required() }).required(),
+  taskId: Joi.string().hex().length(24).required(),
+}).required();
+
+export const addCommentSchema = Joi.object({
+  text: Joi.string().min(1).required(),
+}).required();
+
+export const addAttachmentSchema = Joi.object({
+  url: Joi.string().uri().required(),
+  name: Joi.string().required(),
+  size: Joi.number().min(0).optional(),
+  type: Joi.string().optional(),
+}).required();
 
 export const logTimesheetSchema = Joi.object({
   project: Joi.string().hex().length(24).required(),
